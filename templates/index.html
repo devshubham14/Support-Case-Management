@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 text-center">
+        <h1 class="display-4 mb-4">Welcome to Support Case Management</h1>
+        <p class="lead mb-4">
+            A comprehensive system for managing customer support cases and tracking their resolution.
+        </p>
+        {% if not current_user.is_authenticated %}
+            <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+                <a href="{{ url_for('login') }}" class="btn btn-primary btn-lg px-4 gap-3">Login</a>
+                <a href="{{ url_for('register') }}" class="btn btn-outline-secondary btn-lg px-4">Register</a>
+            </div>
+        {% else %}
+            <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+                <a href="{{ url_for('dashboard') }}" class="btn btn-primary btn-lg px-4 gap-3">Go to Dashboard</a>
+                <a href="{{ url_for('new_case') }}" class="btn btn-success btn-lg px-4">Create New Case</a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Submit Cases</h5>
+                <p class="card-text">Easily submit and track your support cases through our user-friendly interface.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Track Progress</h5>
+                <p class="card-text">Monitor the status of your cases and receive updates on their progress.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Get Support</h5>
+                <p class="card-text">Our support agents are ready to help you resolve your issues quickly and efficiently.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

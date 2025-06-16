@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="text-center">Assign Case #{{ case.id }}</h3>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('assign_case', case_id=case.id) }}">
+                    {{ form.hidden_tag() }}
+                    <div class="mb-3">
+                        {{ form.agent_id.label(class="form-label") }}
+                        {{ form.agent_id(class="form-select") }}
+                        {% for error in form.agent_id.errors %}
+                            <span class="text-danger">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">Assign Case</button>
+                        <a href="{{ url_for('view_case', case_id=case.id) }}" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

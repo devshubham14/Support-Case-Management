@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h3 class="mb-0">Case #{{ case.id }}: {{ case.title }}</h3>
+                <span class="badge {% if case.status == 'Open' %}bg-primary
+                                 {% elif case.status == 'In Progress' %}bg-warning
+                                 {% else %}bg-success{% endif %}">
+                    {{ case.status }}
+                </span>
+            </div>
+            <div class="card-body">
+                <div class="mb-4">
+                    <h5>Description</h5>
+                    <p>{{ case.description }}</p>
+                </div>
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                        <h5>Priority</h5>
+                        <span class="badge {% if case.priority == 'High' %}bg-danger
+                                         {% elif case.priority == 'Medium' %}bg-warning
+                                         {% else %}bg-info{% endif %}">
+                            {{ case.priority }}
+                        </span>
+                    </div>
+                    <div class="col-md-4">
+                        <h5>Created</h5>
+                        <p>{{ case.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
+                    </div>
+                    <div class="col-md-4">
+                        <h5>Last Updated</h5>
+                        <p>{{ case.updated_at.strftime('%Y-%m-%d %H:%M') }}</p>
+                    </div>
+                </div>
+                {% if current_user.is_agent %}
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h5>Customer</h5>
+                            <p>{{ case.customer.username }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Assigned To</h5>
+                            <p>{{ case.assigned_agent.username if case.assigned_agent else 'Unassigned' }}</p>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">Case Notes</h4>
+            </div>
+            <div class="card-body">
+                {% for note in case.notes %}
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h6 class="mb-0">{{ note.user.username }}</h6>
+                                <small class="text-muted">{{ note.created_at.strftime('%Y-%m-%d %H:%M') }}</small>
+                            </div>
+                            <p class="mb-0">{{ note.content }}</p>
+                        </div>
+                    </div>
+                {% else %}
+                    <p class="text-muted">No notes yet.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        {% if current_user.is_agent %}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h4 class="mb-0">Actions</h4>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a href="{{ url_for('update_case', case_id=case.id) }}" class="btn btn-warning">Update Status</a>
+                        <a href="{{ url_for('assign_case', case_id=case.id) }}" class="btn btn-secondary">Assign Case</a>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+        
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">Case Timeline</h4>
+            </div>
+            <div class="card-body">
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-marker"></div>
+                        <div class="timeline-content">
+                            <h6 class="mb-0">Case Created</h6>
+                            <small class="text-muted">{{ case.created_at.strftime('%Y-%m-%d %H:%M') }}</small>
+                        </div>
+                    </div>
+                    {% for note in case.notes %}
+                        <div class="timeline-item">
+                            <div class="timeline-marker"></div>
+                            <div class="timeline-content">
+                                <h6 class="mb-0">Status Updated</h6>
+                                <small class="text-muted">{{ note.created_at.strftime('%Y-%m-%d %H:%M') }}</small>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.timeline {
+    position: relative;
+    padding-left: 30px;
+}
+
+.timeline-item {
+    position: relative;
+    padding-bottom: 20px;
+}
+
+.timeline-marker {
+    position: absolute;
+    left: -30px;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: #007bff;
+    border: 3px solid #fff;
+    box-shadow: 0 0 0 2px #007bff;
+}
+
+.timeline-item:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    left: -23px;
+    top: 15px;
+    height: calc(100% - 15px);
+    width: 2px;
+    background: #007bff;
+}
+</style>
+{% endblock %} 
