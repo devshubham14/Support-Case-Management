@@ -1,0 +1,4 @@
+cd C:\Users\sp240\Desktop\work
+.\venv\Scripts\Activate
+pip install -r requirements.txt
+flask run
